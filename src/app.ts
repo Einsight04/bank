@@ -1,11 +1,13 @@
 const path = require("path")
 const express = require("express");
+const cookieParser = require('cookie-parser');
 const mysql = require("mysql");
 const dotenv = require("dotenv");
 
 dotenv.config({ path: path.join(__dirname, "..", ".env") });
 
 const app = express();
+app.use(cookieParser())
 
 const db = mysql.createConnection({
     host: process.env.DATABASE_HOST,
@@ -17,9 +19,8 @@ const db = mysql.createConnection({
 const publicDirectory = path.join(__dirname, "..", "public");
 app.use(express.static(publicDirectory));
 
-// Allow Parsing of URL-Encoded Bodies
+// Allow Parsing of URL-Encoded Bodies / JSON
 app.use(express.urlencoded({ extended: false }));
-// Allow Parsing of JSON Bodies
 app.use(express.json());
 
 app.set("view engine", "hbs");
@@ -35,7 +36,7 @@ db.connect( (err: any) => {
 
 // Define Routes
 app.use("/", require(path.join(__dirname, "..", "routes/pages.js")))
-app.use('/auth', require('../routes/auth'))
+app.use('/auth', require(path.join(__dirname, "..", 'routes/auth')))
 
 
 app.listen(4000, () => {

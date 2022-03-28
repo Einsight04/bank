@@ -1,5 +1,6 @@
 const mysql = require("mysql");
 const bcrypt = require("bcryptjs");
+const { v4: uuidv4 } = require('uuid');
 
 const db = mysql.createConnection({
     host: process.env.DATABASE_HOST,
@@ -26,15 +27,8 @@ exports.register = (req, res) => {
                 message: "Email and or password is incorrect"
             });
         } else {
-            return res.render("accounts")
+            res.cookie('Identifier', uuidv4(), { maxAge: 900000, httpOnly: true });
+            return res.redirect("accounts")
         }
     });
 }
-
-
-// if (await bcrypt.compare(password, hashedPassword)) {
-//     //Here i am comparing
-//     console.log('valid');
-// } else {
-//     console.log('invalid');
-// }
