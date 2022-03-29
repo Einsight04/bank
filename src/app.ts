@@ -1,22 +1,15 @@
 const path = require("path")
 const express = require("express");
 const cookieParser = require('cookie-parser');
-const mysql = require("mysql");
 const dotenv = require("dotenv");
+const mysqldb = require("../db-connection/mysql");
 
 dotenv.config({ path: path.join(__dirname, "..", ".env") });
 
 const app = express();
 app.use(cookieParser())
 
-const db = mysql.createConnection({
-    host: process.env.DATABASE_HOST,
-    user: process.env.DATABASE_USER,
-    password: process.env.DATABASE_PASS,
-    database: process.env.DATABASE
-});
-
-
+const db = mysqldb.sqlDb()
 
 const publicDirectory = path.join(__dirname, "..", "public");
 app.use(express.static(publicDirectory));
@@ -38,7 +31,12 @@ db.connect( (err: any) => {
 
 // Define Routes
 app.use("/", require(path.join(__dirname, "..", "routes/pages.js")))
-app.use('/auth', require(path.join(__dirname, "..", 'routes/auth')))
+app.use("/auth", require(path.join(__dirname, "..", "routes/auth")))
+app.use("/accounts", require(path.join(__dirname, "..", "routes/accounts")))
+
+app.get('*', (req: any, res: { render: (arg0: string) => any; }) => {
+    return res.render("404")
+});
 
 
 app.listen(4000, () => {
