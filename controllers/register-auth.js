@@ -13,12 +13,12 @@ exports.register = (req, res) => {
     console.log(req.body);
     const { name, email, password, passwordConfirm } = req.body;
 
-    db.query("SELECT email FROM users WHERE email = ?", [email], async (err, emailResult) => {
+    db.query("SELECT * FROM users WHERE email = ?", [email], async (err, results) => {
         if (err) {
             console.log(err);
         }
 
-        if (emailResult.length > 0) {
+        if (results.length > 0) {
             return res.render("register", {
                 message: "Email already is use"
             });
@@ -29,7 +29,6 @@ exports.register = (req, res) => {
         }
 
         let hashedPassword = await bcrypt.hash(password, 8);
-        console.log(hashedPassword);
 
         db.query("INSERT INTO users SET ?", {
             name: name,
@@ -37,9 +36,20 @@ exports.register = (req, res) => {
             password: hashedPassword,
         }, (err) => {
             if (err) {
-                console.log(err)
+                console.log(err);
             } else {
-                return res.render("accounts")
+                let uuid = uuidv4();
+
+                let sql = mysql.format(`UPDATE users SET uuid = "${uuid}" WHERE id = ?`, results[0].id);
+
+                db.query(sql, (err) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
+
+                res.cookie('UUID', uuid, { maxAge: 900000, httpOnly: true });
+                return res.redirect("accounts")
             }
         })
     });
