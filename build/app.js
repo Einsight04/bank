@@ -4,6 +4,7 @@ const express = require("express");
 const cookieParser = require('cookie-parser');
 const dotenv = require("dotenv");
 const mysqldb = require("../db-connection/mysql");
+const cron = require("node-cron");
 dotenv.config({ path: path.join(__dirname, "..", ".env") });
 const app = express();
 app.use(cookieParser());
@@ -31,4 +32,15 @@ app.get('*', (req, res) => {
 });
 app.listen(4000, () => {
     console.log("Server started on Port 4000");
+});
+function update() {
+    console.log("Updating...");
+    db.query("UPDATE users SET time = time + 1", (err, results) => {
+        if (err) {
+            console.log(err);
+        }
+    });
+}
+cron.schedule("* * * * * *", () => {
+    update();
 });

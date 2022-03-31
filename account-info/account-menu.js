@@ -7,7 +7,7 @@ exports.register = (req, res) => {
         return res.redirect("index")
     }
 
-    res.render("menu")
+    res.render("menu.hbs")
 
     db.query("SELECT checking FROM users WHERE uuid = ?", req.cookies["UUID"], async (err, checkingBalance) => {
         if (err) {
