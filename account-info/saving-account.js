@@ -16,12 +16,8 @@ exports.register = (req, res) => {
         } else {
             return res.render("account", {
                 account: "Saving",
-                balance: results[0].saving
+                balance: Math.round((results[0].saving + Number.EPSILON) * 100) / 100
             });
         }
-
-
     });
-
-
 }

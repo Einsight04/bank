@@ -40,19 +40,24 @@ app.get('*', (req: any, res: { render: (arg0: string) => any; }) => {
 });
 
 
-app.listen(4000, () => {
+app.listen(2000, () => {
     console.log("Server started on Port 4000");
 })
 
 
 function update() {
-    console.log("Updating...")
+    // console.log("Updating...")
 
-    db.query("UPDATE users SET time = time + 1 WHERE ", (err: any, results: any) => {
+    db.query("UPDATE users SET time = time + 1 WHERE time < 5", (err: any) => {
         if (err) {
             console.log(err);
         }
+    });
 
+    db.query("UPDATE users SET time = 0, checking = checking * (1 + 0.10), saving = saving * (1 + 0.10) WHERE time >= 5", (err: any) => {
+        if (err) {
+            console.log(err);
+        }
     });
 }
 

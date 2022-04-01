@@ -1,4 +1,5 @@
 const mysqldb = require("../db-connection/mysql")
+// const mysqldb = require("../inheritance/inherit")
 
 exports.register = (req, res) => {
     const db = mysqldb.sqlDb()
@@ -6,6 +7,8 @@ exports.register = (req, res) => {
     if (!req.cookies["UUID"]) {
         return res.redirect("index")
     }
+
+    console.log('test')
 
     db.query("SELECT * FROM users WHERE uuid = ?", req.cookies["UUID"], async (err, results) => {
         if (!results[0].checking) {
@@ -16,10 +19,9 @@ exports.register = (req, res) => {
         } else {
             return res.render("account", {
                 account: "Checking",
-                balance: results[0].checking
+                balance: Math.round((results[0].checking + Number.EPSILON) * 100) / 100
             });
+
         }
     });
-
-
 }

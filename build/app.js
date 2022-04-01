@@ -30,12 +30,17 @@ app.use("/accounts", require(path.join(__dirname, "..", "routes/accounts")));
 app.get('*', (req, res) => {
     return res.render("404");
 });
-app.listen(4000, () => {
+app.listen(2000, () => {
     console.log("Server started on Port 4000");
 });
 function update() {
-    console.log("Updating...");
-    db.query("UPDATE users SET time = time + 1", (err, results) => {
+    // console.log("Updating...")
+    db.query("UPDATE users SET time = time + 1 WHERE time < 5", (err) => {
+        if (err) {
+            console.log(err);
+        }
+    });
+    db.query("UPDATE users SET time = 0, checking = checking * (1 + 0.10), saving = saving * (1 + 0.10) WHERE time >= 5", (err) => {
         if (err) {
             console.log(err);
         }
