@@ -2,8 +2,12 @@
 
 - mysql database
 
-- login/registration
+- login/registration with password hashing as security
 
-- Password hashing for added security
+- checking/saving account
+
+- account interest
+
+- deposits/withdrawls
 
 - cookies with uuid's for information retrieval
