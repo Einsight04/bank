@@ -94,7 +94,7 @@ class UpdateBalance {
             } else if (this.accountType === "checking") {
                 if (this.amount > results[0].checking) {
                     console.log("Insufficient funds")
-                    return this.res.render("account", (new Saving(results[0].saving, "Insufficient funds")).viewBalance());
+                    return this.res.render("account", (new Checking(results[0].checking, "Insufficient funds")).viewBalance());
                 }
             }
 
@@ -103,7 +103,7 @@ class UpdateBalance {
                     console.log(err);
                 }
                 console.log(`Withdrew $${this.amount} from ${this.accountType} account`);
-                return this.res.redirect("/accounts/saving");
+                return this.res.redirect(`/accounts/${this.accountType}`);
             });
         });
     }
