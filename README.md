@@ -1,9 +1,9 @@
 # Bank webapp
 
-mysql database
+- mysql database
 
-login/registration
+- login/registration
 
-Password hashing for added security
+- Password hashing for added security
 
-cookies with uuid's for information retrieval
+- cookies with uuid's for information retrieval
