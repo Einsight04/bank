@@ -1,27 +1,18 @@
-const mysqldb = require("../db-connection/mysql")
-// const mysqldb = require("../inheritance/inherit")
+const db = require('../db-connection/mysql')
+const {Checking} = require("../inheritance/inherit");
 
 exports.register = (req, res) => {
-    const db = mysqldb.sqlDb()
-
-    if (!req.cookies["UUID"]) {
-        return res.redirect("index")
-    }
-
-    console.log('test')
-
-    db.query("SELECT * FROM users WHERE uuid = ?", req.cookies["UUID"], async (err, results) => {
-        if (!results[0].checking) {
-            return res.render("account", {
-                account: "Checking",
-                balance: "0"
+    db.query("SELECT 1 FROM users WHERE uuid = ?", [req.cookies["UUID"]], async (err, exists) => {
+        if (exists.length > 0) {
+            db.query("SELECT * FROM users WHERE uuid = ?", req.cookies["UUID"], async (err, results) => {
+                if (err) {
+                    console.log(err);
+                }
+                console.log(`Checking Balance: ${results[0].checking}`);
+                return res.render("account", (new Checking(results[0].checking)).viewBalance());
             });
         } else {
-            return res.render("account", {
-                account: "Checking",
-                balance: Math.round((results[0].checking + Number.EPSILON) * 100) / 100
-            });
-
+            return res.redirect("/404");
         }
     });
 }

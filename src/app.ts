@@ -1,16 +1,17 @@
 const path = require("path")
+const mysql = require("mysql");
 const express = require("express");
 const cookieParser = require('cookie-parser');
 const dotenv = require("dotenv");
-const mysqldb = require("../db-connection/mysql");
 const cron = require("node-cron");
+const db = require('../db-connection/mysql')
+const {Checking, Saving} = require("../inheritance/inherit");
 
 dotenv.config({ path: path.join(__dirname, "..", ".env") });
 
 const app = express();
 app.use(cookieParser())
 
-const db = mysqldb.sqlDb()
 
 const publicDirectory = path.join(__dirname, "..", "public");
 app.use(express.static(publicDirectory));
@@ -21,7 +22,7 @@ app.use(express.json());
 
 app.set("view engine", "hbs");
 
-db.connect( (err: any) => {
+db.connect((err: string) => {
     if (err) {
         console.log(err);
     } else {
@@ -30,23 +31,25 @@ db.connect( (err: any) => {
 })
 
 
-// Define Routes
+// Routes
 app.use("/", require(path.join(__dirname, "..", "routes/pages.js")))
 app.use("/auth", require(path.join(__dirname, "..", "routes/auth")))
 app.use("/accounts", require(path.join(__dirname, "..", "routes/accounts")))
+
 
 app.get('*', (req: any, res: { render: (arg0: string) => any; }) => {
     return res.render("404")
 });
 
 
-app.listen(2000, () => {
+app.listen(2500, () => {
     console.log("Server started on Port 4000");
 })
 
 
 function update() {
-    // console.log("Updating...")
+    const checkingInterest = (new Checking).interestAdded();
+    const savingInterest = (new Saving).interestAdded();
 
     db.query("UPDATE users SET time = time + 1 WHERE time < 5", (err: any) => {
         if (err) {
@@ -54,14 +57,14 @@ function update() {
         }
     });
 
-    db.query("UPDATE users SET time = 0, checking = checking * (1 + 0.10), saving = saving * (1 + 0.10) WHERE time >= 5", (err: any) => {
+    db.query(mysql.format(`UPDATE users SET time = 0, checking = checking * ${checkingInterest}, saving = saving * ${savingInterest} WHERE time >= 5`), (err: any) => {
         if (err) {
             console.log(err);
         }
     });
 }
 
-
+// Interest Update
 cron.schedule("* * * * * *", () => {
     update();
 });

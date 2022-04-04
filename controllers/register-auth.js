@@ -1,16 +1,8 @@
-const mysql = require("mysql");
 const bcrypt = require("bcryptjs");
 const {v4: uuidv4} = require('uuid');
-
-const db = mysql.createConnection({
-    host: process.env.DATABASE_HOST,
-    user: process.env.DATABASE_USER,
-    password: process.env.DATABASE_PASS,
-    database: process.env.DATABASE
-});
+const db = require('../db-connection/mysql')
 
 exports.register = (req, res) => {
-    console.log(req.body);
     const {name, email, password, passwordConfirm} = req.body;
 
     db.query("SELECT * FROM users WHERE email = ?", [email], async (err, results) => {
@@ -19,16 +11,38 @@ exports.register = (req, res) => {
         }
 
         if (!name || !email || !password || !passwordConfirm) {
-            return res.render("login", {
-                message: "Please fill out all fields."
+            return res.render("register", {
+                error: "Please fill out all fields."
             });
         } else if (results.length > 0) {
             return res.render("register", {
-                message: "Email already is use"
+                error: "Email already is use"
             });
         } else if (password !== passwordConfirm) {
             return res.render("register", {
-                message: "Passwords do not match."
+                error: "Passwords do not match."
+            });
+        } else if (!password.match(/(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/gm)) {
+            let error = ""
+
+            if (!password.match((/(?=^.{8,}$).*$/gm))) {
+                error += "Password must be 8 characters in length<br>"
+            }
+            if (!password.match((/.*[A-Z].*/gm))) {
+                error += "Password must include an uppercase character<br>"
+            }
+            if (!password.match(/(.*[a-z].*)/gm)) {
+                error += "Password must include a lowercase character<br>"
+            }
+            if (!password.match(/(?=.*\d)/gm)) {
+                error += "Password must include a digit<br>"
+            }
+            if (!password.match(/(?=.*\W)/gm)) {
+                error += "Password must include a special character<br>"
+            }
+
+            return res.render("register", {
+                error: error
             });
         }
 

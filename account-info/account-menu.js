@@ -1,19 +1,11 @@
-const mysqldb = require("../db-connection/mysql")
+const db = require("../db-connection/mysql");
 
 exports.register = (req, res) => {
-    const db = mysqldb.sqlDb()
-
-    if (!req.cookies["UUID"]) {
-        return res.redirect("index")
-    }
-
-    res.render("menu.hbs")
-
-    db.query("SELECT checking FROM users WHERE uuid = ?", req.cookies["UUID"], async (err, checkingBalance) => {
-        if (err) {
-            console.log(err);
+    db.query("SELECT 1 FROM users WHERE uuid = ?", [req.cookies["UUID"]], async (err, exists) => {
+        if (exists.length > 0) {
+            return res.render("menu");
+        } else {
+            return res.redirect("/404");
         }
-
-        console.log(checkingBalance)
     });
-}
+};

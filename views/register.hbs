@@ -7,7 +7,7 @@
     <title>Register</title>
 </head>
 <body>
-    <h1>Bank</h1>
+    <a href="/"><h1>Bank</h1></a>
     <ul>
         <li><a href="/">Home</a></li>
         <li><a href="/login">Login</a></li>
@@ -34,8 +34,8 @@
         <button type="submit">Register</button>
     </form>
 
-    {{#if message }}
-        <h2 class="alert alert-danger mt-4">{{message}}</h2>
+    {{#if error}}
+        <h4>{{{error}}}</h4>
     {{/if}}
 </body>
 </html>

@@ -1,15 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+    <title>account</title>
+</head>
 <body>
-    <h1>Bank</h1>
-    <ul>
-        {{#if account }}
-            <h1>{{account}} Account</h1>
-        {{/if}}
-        {{#if balance }}
-            <h2>Balance: ${{balance}}</h2>
-        {{/if}}
-    </ul>
+    <a href="/accounts/menu"><h1>Bank</h1></a>
+    {{#if account }}
+        <h2>{{account}} Account</h2>
+    {{/if}}
+    {{#if balance }}
+        <h2>Balance: ${{balance}}</h2>
+    {{/if}}
+    {{#if checking}}
+        <form action="/auth/checking/deposit" method="POST">
+            <div>
+                <label for="deposit"></label>
+                <input type="number" step="0.01" min="0" id="deposit" name="deposit">
+            </div>
+            <button type="submit">Deposit</button>
+        </form>
+        <form action="/auth/checking/withdraw" method="POST">
+            <div>
+                <label for="withdraw"></label>
+                <input type="number" step="0.01" min="0" id="withdraw" name="withdraw">
+            </div>
+            <button type="submit">Withdraw</button>
+        </form>
+    {{/if}}
+    {{#if saving}}
+        <form action="/auth/saving/deposit" method="POST">
+            <div>
+                <label for="deposit"></label>
+                <input type="number" step="0.01" min="0" id="deposit" name="deposit">
+            </div>
+            <button type="submit">Deposit</button>
+        </form>
+        <form action="/auth/saving/withdraw" method="POST">
+            <div>
+                <label for="withdraw"></label>
+                <input type="number" step="0.01" min="0" id="withdraw" name="withdraw">
+            </div>
+            <button type="submit">Withdraw</button>
+        </form>
+    {{/if}}
+    {{#if error}}
+        <h4>{{error}}</h4>
+    {{/if}}
 </body>
 </html>

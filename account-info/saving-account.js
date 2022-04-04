@@ -1,23 +1,18 @@
-const mysqldb = require("../db-connection/mysql")
+const db = require('../db-connection/mysql')
+const {Saving} = require("../inheritance/inherit");
 
 exports.register = (req, res) => {
-    const db = mysqldb.sqlDb()
-
-    if (!req.cookies["UUID"]) {
-        return res.redirect("index")
-    }
-
-    db.query("SELECT * FROM users WHERE uuid = ?", req.cookies["UUID"], async (err, results) => {
-        if (!results[0].saving) {
-            return res.render("account", {
-                account: "Saving",
-                balance: "0"
+    db.query("SELECT 1 FROM users WHERE uuid = ?", [req.cookies["UUID"]], async (err, exists) => {
+        if (exists.length > 0) {
+            db.query("SELECT * FROM users WHERE uuid = ?", req.cookies["UUID"], async (err, results) => {
+                if (err) {
+                    console.log(err);
+                }
+                console.log(`Saving Balance: ${results[0].saving}`);
+                return res.render("account", (new Saving(results[0].saving)).viewBalance());
             });
         } else {
-            return res.render("account", {
-                account: "Saving",
-                balance: Math.round((results[0].saving + Number.EPSILON) * 100) / 100
-            });
+            return res.redirect("/404");
         }
     });
 }
