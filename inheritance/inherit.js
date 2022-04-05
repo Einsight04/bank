@@ -19,9 +19,9 @@ class Checking extends Account {
 
     viewBalance() {
         if (this.balance < 0.01) {
-            this.balance = "0"
+            this.balance = String(0)
         } else {
-            this.balance = Math.round((this.balance + Number.EPSILON) * 100) / 100
+            this.balance = String(Math.round((this.balance + Number.EPSILON) * 100) / 100)
         }
 
         return {
@@ -46,10 +46,10 @@ class Saving extends Account {
 
     viewBalance() {
         if (this.balance < 0.0001) {
-            this.balance = "0"
+            this.balance = String(0)
         }
         else {
-            this.balance = Math.round((this.balance + Number.EPSILON) * 100) / 100
+            this.balance = String(Math.round((this.balance + Number.EPSILON) * 100) / 100)
         }
 
         return {

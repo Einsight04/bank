@@ -23,26 +23,26 @@ exports.register = (req, res) => {
                 error: "Passwords do not match."
             });
         } else if (!password.match(/(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/gm)) {
-            let error = ""
+            let errorMessage = ""
 
             if (!password.match((/(?=^.{8,}$).*$/gm))) {
-                error += "Password must be 8 characters in length<br>"
+                errorMessage += "Password must be 8 characters in length<br>"
             }
             if (!password.match((/.*[A-Z].*/gm))) {
-                error += "Password must include an uppercase character<br>"
+                errorMessage += "Password must include an uppercase character<br>"
             }
             if (!password.match(/(.*[a-z].*)/gm)) {
-                error += "Password must include a lowercase character<br>"
+                errorMessage += "Password must include a lowercase character<br>"
             }
             if (!password.match(/(?=.*\d)/gm)) {
-                error += "Password must include a digit<br>"
+                errorMessage += "Password must include a digit<br>"
             }
             if (!password.match(/(?=.*\W)/gm)) {
-                error += "Password must include a special character<br>"
+                errorMessage += "Password must include a special character<br>"
             }
 
             return res.render("register", {
-                error: error
+                error: errorMessage
             });
         }
 

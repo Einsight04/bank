@@ -2,18 +2,28 @@ const path = require("path")
 const express = require("express");
 const registerAuth = require(path.join(__dirname, "..", "controllers/register-auth"))
 const loginAuth = require(path.join(__dirname, "..", "controllers/login-auth"))
-const savingDepositAuth = require(path.join(__dirname, "..", "controllers/saving-deposit-auth"))
-const savingWithdrawAuth = require(path.join(__dirname, "..", "controllers/saving-withdraw-auth"))
-const checkingDepositAuth = require(path.join(__dirname, "..", "controllers/checking-deposit-auth"))
-const checkingWithdrawAuth = require(path.join(__dirname, "..", "controllers/checking-withdraw-auth"))
+const {UpdateBalance} = require("../inheritance/inherit");
 
 const router = express.Router();
 
 router.post("/register", registerAuth.register)
 router.post("/login", loginAuth.register)
-router.post("/saving/deposit", savingDepositAuth.register)
-router.post("/saving/withdraw" , savingWithdrawAuth.register)
-router.post("/checking/deposit", checkingDepositAuth.register)
-router.post("/checking/withdraw", checkingWithdrawAuth.register)
+
+router.post("/saving/deposit", (req, res) => {
+    let {deposit} = req.body;
+    (new UpdateBalance("saving", deposit, req.cookies["UUID"], res)).deposit();
+})
+router.post("/saving/withdraw" , (req, res) => {
+    let {withdraw} = req.body;
+    (new UpdateBalance("saving", withdraw, req.cookies["UUID"], res)).withdraw();
+})
+router.post("/checking/deposit", (req, res) => {
+    let {deposit} = req.body;
+    (new UpdateBalance("checking", deposit, req.cookies["UUID"], res)).deposit();
+})
+router.post("/checking/withdraw", (req, res) => {
+    let {withdraw} = req.body;
+    (new UpdateBalance("checking", withdraw, req.cookies["UUID"], res)).withdraw();
+})
 
 module.exports = router;
