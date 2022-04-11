@@ -1,4 +1,5 @@
-const db = require('../db-connection/mysql')
+const path = require("path");
+const db = require("../db-connection/mysql");
 const {Checking} = require("../inheritance/inherit");
 
 exports.register = (req, res) => {
@@ -9,7 +10,7 @@ exports.register = (req, res) => {
                     console.log(err);
                 }
                 console.log(`Checking Balance: ${results[0].checking}`);
-                return res.render("account", (new Checking(results[0].checking)).viewBalance());
+                return res.render(path.join(__dirname, "..", "/views/account"), (new Checking(results[0].checking)).viewBalance(""));
             });
         } else {
             return res.redirect("/404");

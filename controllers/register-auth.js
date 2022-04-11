@@ -1,6 +1,7 @@
+const path = require("path");
 const bcrypt = require("bcryptjs");
-const {v4: uuidv4} = require('uuid');
-const db = require('../db-connection/mysql')
+const {v4: uuidv4} = require("uuid");
+const db = require(path.join(__dirname, "..", "/db-connection/mysql"));
 
 exports.register = (req, res) => {
     const {name, email, password, passwordConfirm} = req.body;
@@ -11,15 +12,15 @@ exports.register = (req, res) => {
         }
 
         if (!name || !email || !password || !passwordConfirm) {
-            return res.render("register", {
+            return res.render(path.join(__dirname, "..", "/views/register"), {
                 error: "Please fill out all fields."
             });
         } else if (results.length > 0) {
-            return res.render("register", {
+            return res.render(path.join(__dirname, "..", "/views/register"), {
                 error: "Email already is use"
             });
         } else if (password !== passwordConfirm) {
-            return res.render("register", {
+            return res.render(path.join(__dirname, "..", "/views/register"), {
                 error: "Passwords do not match."
             });
         } else if (!password.match(/(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/gm)) {
@@ -41,7 +42,7 @@ exports.register = (req, res) => {
                 errorMessage += "Password must include a special character<br>"
             }
 
-            return res.render("register", {
+            return res.render(path.join(__dirname, "..", "/views/register"), {
                 error: errorMessage
             });
         }

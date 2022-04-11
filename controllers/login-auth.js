@@ -1,3 +1,4 @@
+const path = require("path")
 const mysql = require("mysql");
 const bcrypt = require("bcryptjs");
 const {v4: uuidv4} = require("uuid");
@@ -12,15 +13,15 @@ exports.register = (req, res) => {
         }
 
         if (!email || !password) {
-            return res.render("login", {
+            return res.render(path.join(__dirname, "..", "/views/login"), {
                 error: "Please fill out all fields."
             });
         } else if (!results.length) {
-            return res.render("login", {
+            return res.render(path.join(__dirname, "..", "/views/login"), {
                 error: "Email is not in use"
             });
         } else if (!await bcrypt.compare(password, results[0].password)) {
-            return res.render("login", {
+            return res.render(path.join(__dirname, "..", "/views/login"), {
                 error: "Email and or password is incorrect"
             });
         }

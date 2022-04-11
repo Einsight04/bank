@@ -5,8 +5,9 @@ const express = require("express");
 const cookieParser = require('cookie-parser');
 const dotenv = require("dotenv");
 const cron = require("node-cron");
-const db = require('../db-connection/mysql');
-const { Checking, Saving } = require("../inheritance/inherit");
+const db = require(path.join(__dirname, "..", "/db-connection/mysql"));
+const { Checking, Saving } = require(path.join(__dirname, "..", "/inheritance/inherit"));
+console.log(path.join(__dirname, "..", ".env"));
 dotenv.config({ path: path.join(__dirname, "..", ".env") });
 const app = express();
 app.use(cookieParser());
@@ -29,11 +30,14 @@ app.use("/", require(path.join(__dirname, "..", "routes/pages.js")));
 app.use("/auth", require(path.join(__dirname, "..", "routes/auth")));
 app.use("/accounts", require(path.join(__dirname, "..", "routes/accounts")));
 app.get('*', (req, res) => {
-    return res.render("404");
+    return res.render(path.join(__dirname, "..", "/views/404"));
 });
 app.listen(2500, () => {
     console.log("Server started on Port 4000");
 });
+/**
+ * Updates mysql db with new balance after interest
+ */
 function update() {
     const checkingInterest = (new Checking).interestAdded();
     const savingInterest = (new Saving).interestAdded();

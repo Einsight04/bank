@@ -4,6 +4,7 @@ const registerAuth = require(path.join(__dirname, "..", "controllers/register-au
 const loginAuth = require(path.join(__dirname, "..", "controllers/login-auth"))
 const {UpdateBalance} = require("../inheritance/inherit");
 
+
 const router = express.Router();
 
 router.post("/register", registerAuth.register)
@@ -25,5 +26,6 @@ router.post("/checking/withdraw", (req, res) => {
     let {withdraw} = req.body;
     (new UpdateBalance("checking", withdraw, req.cookies["UUID"], res)).withdraw();
 })
+
 
 module.exports = router;
